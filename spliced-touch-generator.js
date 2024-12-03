@@ -3,26 +3,28 @@
  */
 const CONFIG = {
 	// Number of leads (first half + second half) to generate. Output will occur early if rounds comes up before this amount. Default: 8
-	numberOfLeads: 8,
+	numberOfLeads: 4,
 
 	// Add a minimum length of touch to output. Set to numberOfLeads to force a touch length. Default: 4
 	minimumLength: 4,
 
+	// An array of methods to include. Touch will not be logged unless all mentioned methods are involved.
+	// Uses the keys of `firstHalfLeads` and `secondHalfLeads`. Default: []
+	/** @type {string[]} */
+	includeMethods: [],
+
 	// Force the touch to use the same "second half" method. Default: false
-	useSameSecondHalf: true,
+	useSameSecondHalf: false,
 
-	// (Currently unsupported) Include bobs. Default: false
-	useBobs: false,
-
-	// (Currently unsupported) Include singles. Default: false
-	useSingles: false,
+	// Include bobs and singles. Default: false
+	useCalls: false,
 
 	// Number of compositions to attempt to generate. Try increasing if compositions are not found. Default: 100000
 	iterations: 100000,
 };
 
 // To limit the method set, comment out any methods below that you wish to exclude
-const firstHalfLeads = {
+const firstHalfLeadsPlain = {
 	Y1: '68472531', // Yorkshire
 	S1: '68472531', // Superlative
 	C1: '74256831', // Cambridge
@@ -31,6 +33,27 @@ const firstHalfLeads = {
 	B1: '24365871', // Bristol
 	R1: '72458361', // Rutland
 	L1: '42637851', // London
+};
+
+const firstHalfLeadsBobs = {
+	'Y1.': '68475321', // Yorkshire
+	'S1.': '68475321', // Superlative
+	'C1.': '74258361', // Cambridge
+	'N1.': '47258361', // Lincolnshire
+	'P1.': '68257341', // Pudsey
+	'B1.': '32546871', // Bristol
+	'R1.': '47825361', // Rutland
+};
+
+const firstHalfLeadsSingles = {
+	Y1s: '68475231', // Yorkshire
+	S1s: '68475231', // Superlative
+	C1s: '74258631', // Cambridge
+	N1s: '47258631', // Lincolnshire
+	P1s: '68257431', // Pudsey
+	B1s: '32546781', // Bristol
+	R1s: '47825631', // Rutland
+	L1s: '42637581', // London
 };
 
 const secondHalfLeads = {
@@ -49,7 +72,21 @@ const secondHalfLeads = {
  */
 
 // Destructure config items
-const { numberOfLeads, minimumLength, useSameSecondHalf, iterations } = CONFIG;
+const { numberOfLeads, minimumLength, useSameSecondHalf, iterations, useCalls } = CONFIG;
+
+const getFirstHalfLeads = () => {
+	let final = { ...firstHalfLeadsPlain };
+
+	if (useCalls) {
+		final = { ...final, ...firstHalfLeadsBobs, ...firstHalfLeadsSingles };
+	}
+
+	return final;
+};
+
+const firstHalfLeads = getFirstHalfLeads();
+
+const includeMethods = CONFIG.includeMethods || [];
 
 // Combine permutations into one big set
 const allPermutations = { ...firstHalfLeads, ...secondHalfLeads };
@@ -150,9 +187,11 @@ const generateRandomComposition = () => {
 		step += 1;
 	}
 
+	const containsAllDesired = includeMethods.length ? includeMethods.every((m) => methodsRung.includes(m)) : true;
+
 	const leadsRung = methodsRung.length / 2;
 
-	if (roundsFound && leadsRung >= minimumLength) {
+	if (roundsFound && containsAllDesired && leadsRung >= minimumLength) {
 		console.log('Found rounds: ', formatForPrint(methodsRung));
 	}
 };
@@ -165,6 +204,25 @@ const checkForCompositions = () => {
 		generateRandomComposition();
 	}
 };
+
+const validateIncludes = () => {
+	const allMethods = Object.keys(allPermutations);
+
+	const invalidIncludes = includeMethods.filter((m) => !allMethods.includes(m));
+
+	if (invalidIncludes.length) {
+		const includeString = includeMethods.join(' ');
+		throw new Error(
+			`Invalid includeMethods configuration. The following methods are missing from the available methods list, but requested by the includeMethods config: ${includeMethods}`
+		);
+	}
+};
+
+/**
+ * Check that `includeMethods` does not have an invalid configuration which
+ * would result in nothing being logged to output
+ */
+validateIncludes();
 
 /**
  * Execute the composition "search"
