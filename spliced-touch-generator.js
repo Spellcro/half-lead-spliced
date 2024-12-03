@@ -3,7 +3,7 @@
  */
 const CONFIG = {
 	// Number of leads (first half + second half) to generate. Output will occur early if rounds comes up before this amount. Default: 8
-	numberOfLeads: 4,
+	numberOfLeads: 8,
 
 	// Add a minimum length of touch to output. Set to numberOfLeads to force a touch length. Default: 4
 	minimumLength: 4,
