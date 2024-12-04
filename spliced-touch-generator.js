@@ -205,7 +205,7 @@ const generateRandomComposition = () => {
 		step += 1;
 	}
 
-	const containsAllDesired = checkIncludeMethods(composition, includeMethods);
+	const containsAllDesired = checkIncludeMethods(methodsRung, includeMethods);
 
 	const leadsRung = methodsRung.length / 2;
 
