@@ -2,21 +2,21 @@
  * CONFIGURATION for touch generation
  */
 const CONFIG = {
-	// Number of leads (first half + second half) to generate. Output will occur early if rounds comes up before this amount. Default: 8
+	// Number of full leads to generate. Output will occur early if rounds comes up before this amount. Default: 8
 	numberOfLeads: 8,
 
-	// Add a minimum length of touch to output. Set to numberOfLeads to force a touch length. Default: 4
+	// Add a minimum length of touch to output. Set to numberOfLeads to force a specific touch length. Default: 4
 	minimumLength: 4,
 
 	// An array of methods to include. Touch will not be logged unless all mentioned methods are involved.
-	// Uses the keys of `firstHalfLeads` and `secondHalfLeads`. Default: []
+	// Checks for substrings of the method keys, so e.g 'B', 'B1', 'B1s' will all work. Default: []
 	/** @type {string[]} */
 	includeMethods: [],
 
 	// Force the touch to use the same "second half" method. Default: false
 	useSameSecondHalf: false,
 
-	// Include bobs and singles. Default: false
+	// Include half-lead bobs and singles. Default: false
 	useCalls: false,
 
 	// Number of compositions to attempt to generate. Try increasing if compositions are not found. Default: 100000
@@ -154,6 +154,24 @@ const pickDifferentNumber = (randomNumber, maximum) => {
 	return newNumber;
 };
 
+/**
+ * Checks that all "required methods" were included in the composition,
+ * accounting for calls and different parts of the lead
+ * @param {string[]} composition
+ * @param {string[]} includeMethods
+ */
+const checkIncludeMethods = (composition, includeMethods) => {
+	if (!includeMethods.length) {
+		return true;
+	}
+
+	// Every required method in includeMethods must be a substring of
+	// at least one half-lead in the composition
+	return includeMethods.every((requiredMethod) => {
+		return composition.some((method) => method.includes(requiredMethod));
+	});
+};
+
 const generateRandomComposition = () => {
 	// Generate a fixed second half, in case requested based on CONFIG values
 	const fixedSecondHalf = Math.floor(Math.random() * numberOfSecondHalves);
@@ -187,7 +205,7 @@ const generateRandomComposition = () => {
 		step += 1;
 	}
 
-	const containsAllDesired = includeMethods.length ? includeMethods.every((m) => methodsRung.includes(m)) : true;
+	const containsAllDesired = checkIncludeMethods(composition, includeMethods);
 
 	const leadsRung = methodsRung.length / 2;
 
@@ -208,12 +226,12 @@ const checkForCompositions = () => {
 const validateIncludes = () => {
 	const allMethods = Object.keys(allPermutations);
 
-	const invalidIncludes = includeMethods.filter((m) => !allMethods.includes(m));
+	const invalidIncludes = includeMethods.filter((m) => !allMethods.some((key) => key.includes(m)));
 
 	if (invalidIncludes.length) {
-		const includeString = includeMethods.join(' ');
+		const includeString = invalidIncludes.join(', ');
 		throw new Error(
-			`Invalid includeMethods configuration. The following methods are missing from the available methods list, but requested by the includeMethods config: ${includeMethods}`
+			`Invalid includeMethods configuration. The following methods are missing from the available methods list, but requested by the includeMethods config: ${includeString}`
 		);
 	}
 };
