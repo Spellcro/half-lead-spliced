@@ -1,51 +1,56 @@
-Beginner - CNY with Y/S 2nd half
+[Beginner] CNY, single 2nd half (Y or S)
 1. (N1 S2) x4 [4 Leads]
 2. (N1 Y2) x4 [4 Leads]
 3. (C1 Y2 C1 Y2 N1 Y2) x2 [6 Leads]
 
-Novice - SY with C 2nd half
+[Novice] CSY, single 2nd half (C or N)
 4. (S1 C2 Y1 C2 S1 C2) x2 [6 Leads]
+5. S1 N2 Y1 N2 Y1 N2 S1 N2 [4 Leads]
+7. S1sN2 C1.N2 Y1sN2 C1.N2 [4 Leads, with calls]
 
-Novice - BCNPSY with Y/S 2nd half
+[Novice] BCNPSY, Single 2nd half (Y or S)
 5. (S1 N2 Y1 N2) x2 [4 Leads]
 6. (B1 Y2 P1 Y2 N1 Y2) x2 [6 Leads]
 7. Y1 S2 B1 S2 B1 S2 Y1 S2 Y1 S2 [5 Leads]
 
-Intermediate - CNSYP with B 2nd half
+[Intermediate] CNSYP, Single 2nd Half (B)
 8. C1 B2 P1 B2 S1 B2 Y1 B2 C1 B2 P1 B2 N1 B2 N1 B2 [8 Leads]
 S1 B2 N1 B2 Y1 B2 C1 B2 P1 B2 N1 B2 C1 B2 N1 B2
 
 Y1sB2 Y1.B2 S1sB2 Y1.B2 S1.B2 Y1.B2
 
-Intermediate - CNSYPB with mixed CNSY 2nd half
+[Intermediate] CNSYPB with mixed CNSY 2nd half
 9.  C1 Y2 P1 C2 N1 S2 Y1 N2 B1 Y2 P1 N2 Y1 N2 [7 Leads]
 10. B1 C2 S1 C2 Y1 S2 N1 Y2 C1 S2 N1 C2 P1 N2 [7 Leads]
 11. B1 N2 C1 Y2 B1 Y2 P1 Y2 P1 S2 N1 C2 Y1 S2 [7 Leads]
 
-Intermediate - Standard 8 with Y/S second half
+[Intermediate] Standard 8 with single 2nd half (Y or S)
 12. Y1 S2 B1 S2 R1 S2 N1 S2 P1 S2 L1 S2 Y1 S2 C1 S2 [8 Leads]
 13. P1 S2 L1 S2 C1 S2 R1 S2 Y1 S2 B1 S2 Y1 S2 N1 S2 [8 Leads]
 14. S1 Y2 N1 Y2 P1 Y2 L1 Y2 C1 Y2 R1 Y2 B1 Y2 S1 Y2 [8 Leads]
 15. L1 Y2 S1 Y2 R1 Y2 S1 Y2 N1 Y2 C1 Y2 B1 Y2 P1 Y2 [8 Leads]
 
+[Advanced] Mixed 2nd half (Y + S)
 
-Advanced - Standard 8 with B/L second half
+[Advanced] Standard 8 with single second half (B or L)
 16. S1 L2 N1 L2 B1 L2 C1 L2 C1 L2 R1 L2 Y1 L2 P1 L2 [8 Leads]
 17. P1 B2 R1 B2 L1 B2 L1 B2 C1 B2 N1 B2 L1 B2 P1 B2 [8 Leads]
 18. C1 B2 N1 B2 S1 B2 R1 B2 R1 B2 L1 B2 S1 B2 [7 Leads]
 19. L1 B2 N1 B2 Y1 B2 P1 B2 S1 B2 R1 B2 C1 B2 N1 B2 S1 B2 [9 Leads]
 
+[Advanced] Easier methods with calls
+B1.C2 B1 C2 N1 Y2 B1.S2 S1sC2
+B1sN2 B1 Y2 Y1 C2 Y1 S2 S1.B2 Y1sC2
 
-w/ Simple Calls 
 
-P1sB2 L1sN2 C1 S2 R1 Y2
+[Advanced] Full half-lead spliced, with calls
+21. P1sB2 L1sN2 C1 S2 R1 Y2
+
 
 L1 C2 S1sY2 P1.Y2 R1sB2 N1 S2
 
 N1.C2 S1sC2 Y1sP2 B1.S2 S1sB2 R1sR2
 
-B1.C2 B1 C2 N1 Y2 B1.S2 S1sC2
 
-B1sN2 B1 Y2 Y1 C2 Y1 S2 S1.B2 Y1sC2
 
 P1 S2 C1 N2 C1.N2 R1sC2 P1.C2 P1sN2 S1.N2 R1.S2
