@@ -17,13 +17,16 @@ const CONFIG = {
 	useSameSecondHalf: false,
 
 	// Include half-lead bobs and singles. Default: false
-	useCalls: false,
+	useHalfLeadCalls: false,
 
 	// Number of compositions to attempt to generate. Try increasing if compositions are not found. Default: 100000
 	iterations: 100000,
+
+	// Max bobs/singles in a touch. Will not output any touch with more calls than this (at any position). Default: 2
+	maxCalls: 2,
 };
 
-// To limit the method set, comment out any methods below that you wish to exclude
+// To limit the method set, manually comment out any methods below that you wish to exclude
 const firstHalfLeadsPlain = {
 	Y1: '68472531', // Yorkshire
 	S1: '68472531', // Superlative
@@ -33,6 +36,7 @@ const firstHalfLeadsPlain = {
 	B1: '24365871', // Bristol
 	R1: '72458361', // Rutland
 	L1: '42637851', // London
+	G1: '25374681', // Glasgow
 };
 
 const firstHalfLeadsBobs = {
@@ -57,14 +61,45 @@ const firstHalfLeadsSingles = {
 };
 
 const secondHalfLeads = {
-	Y2: '86472513', // Yorkshire
-	S2: '86472513', // Superlative
-	C2: '84176352', // Cambridge
-	N2: '84276351', // Lincolnshire
-	P2: '84672315', // Pudsey
-	B2: '82143657', // Bristol
-	R2: '83276541', // Rutland
-	L2: '81234675', // London
+	// Yorkshire
+	Y2: '86472513',
+	'Y2.': '87642513',
+	Y2s: '86742513',
+
+	// Superlative
+	S2: '86472513',
+	'S2.': '87642513',
+	S2s: '86742513',
+
+	// Cambridge
+	C2: '84176352',
+	'C2.': '87416352',
+	C2s: '84716352',
+
+	// Lincolnshire
+	N2: '84276351',
+	'N2.': '87426351',
+	N2s: '84726351',
+
+	// Pudsey
+	P2: '84672315',
+	'P2.': '87462315',
+	P2s: '84762315',
+
+	// Bristol
+	B2: '82143657',
+	'B2.': '82135478',
+	B2s: '81235478',
+
+	// Rutland
+	R2: '83276541',
+	'R2.': '87326541',
+	R2s: '83726541',
+
+	// London
+	L2: '81234675',
+	'L2.': '83124675',
+	L2s: '81324675',
 };
 
 /**
@@ -72,12 +107,12 @@ const secondHalfLeads = {
  */
 
 // Destructure config items
-const { numberOfLeads, minimumLength, useSameSecondHalf, iterations, useCalls } = CONFIG;
+const { numberOfLeads, minimumLength, useSameSecondHalf, iterations, useHalfLeadCalls, maxCalls } = CONFIG;
 
 const getFirstHalfLeads = () => {
 	let final = { ...firstHalfLeadsPlain };
 
-	if (useCalls) {
+	if (useHalfLeadCalls) {
 		final = { ...final, ...firstHalfLeadsBobs, ...firstHalfLeadsSingles };
 	}
 
@@ -187,6 +222,14 @@ const generateRandomComposition = () => {
 		// Add a second half lead
 		const secondHalf = useSameSecondHalf ? fixedSecondHalf : Math.floor(Math.random() * numberOfSecondHalves);
 		composition.push(secondHalfLeadMethods[secondHalf]);
+	}
+
+	const calls = composition
+		.join(' ')
+		.split('')
+		.filter((c) => c === 's' || c === '.');
+	if (calls.length > maxCalls) {
+		return;
 	}
 
 	// Iterate through each lead of the composition, to see if it comes round
