@@ -1,3 +1,5 @@
+import { checkForTruth } from './validate-composition.js';
+
 /**
  * CONFIGURATION for touch generation
  */
@@ -7,6 +9,9 @@ const CONFIG = {
 
 	// Add a minimum length of touch to output. Set to numberOfLeads to force a specific touch length. Default: 4
 	minimumLength: 4,
+
+	// If the program should validate for truth. Significantly increases the execution time. Default: false
+	checkForTruth: false,
 
 	// An array of methods to include. Touch will not be logged unless all mentioned methods are involved.
 	// Checks for substrings of the method keys, so e.g 'B', 'B1', 'B1s' will all work. Default: []
@@ -22,7 +27,8 @@ const CONFIG = {
 	// Number of compositions to attempt to generate. Try increasing if compositions are not found. Default: 100000
 	iterations: 100000,
 
-	// Max bobs/singles in a touch. Will not output any touch with more calls than this (at any position). Default: 2
+	// Max bobs/singles in a touch. Will not output any touch with more calls than this (at any position).
+	// Set to any negative number to disable. Default: 2
 	maxCalls: 2,
 };
 
@@ -158,7 +164,7 @@ const formatForPrint = (methodsRung) => {
 		}
 	});
 
-	return str;
+	return str.trim();
 };
 /**
  * Permutes the provided row (order of bells)
@@ -230,7 +236,7 @@ const generateRandomComposition = () => {
 		.join(' ')
 		.split('')
 		.filter((c) => c === 's' || c === '.');
-	if (calls.length > maxCalls) {
+	if (maxCalls >= 0 && calls.length > maxCalls) {
 		return;
 	}
 
@@ -255,7 +261,11 @@ const generateRandomComposition = () => {
 	const leadsRung = methodsRung.length / 2;
 
 	if (roundsFound && containsAllDesired && leadsRung >= minimumLength) {
-		console.log('Found rounds: ', formatForPrint(methodsRung));
+		const formattedComposition = formatForPrint(methodsRung);
+
+		if (!CONFIG.checkForTruth || checkForTruth(formattedComposition)) {
+			console.log('Found rounds: ', formattedComposition);
+		}
 	}
 };
 

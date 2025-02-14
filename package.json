@@ -3,6 +3,7 @@
 	"version": "1.0.0",
 	"description": "A package for brute-force generating practice night touches of half-lead spliced",
 	"main": "spliced-touch-generator.js",
+	"type": "module",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"start": "node spliced-touch-generator.js"
