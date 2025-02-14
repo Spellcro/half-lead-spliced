@@ -88,8 +88,8 @@ const secondHalfLeads = {
 
 	// Bristol
 	B2: '82143657',
-	'B2.': '82135478',
-	B2s: '81235478',
+	'B2.': '82135476',
+	B2s: '81235476',
 
 	// Rutland
 	R2: '83276541',
@@ -147,17 +147,19 @@ const isRounds = (row) => {
 const formatForPrint = (methodsRung) => {
 	let str = '';
 
-	methodsRung.forEach((m) => {
-		str += m;
-		const finalChar = m[m.length - 1];
-		const hasCall = finalChar === '.' || finalChar === 's';
-		const separator = hasCall ? '' : ' ';
-		str += separator;
+	methodsRung.forEach((m, index) => {
+		const removeNumbers = Array.from(m).filter((c) => isNaN(Number(c)));
+
+		str += removeNumbers.join('');
+
+		const isSecondHalf = index % 2 !== 0;
+		if (isSecondHalf) {
+			str += ' ';
+		}
 	});
 
 	return str;
 };
-
 /**
  * Permutes the provided row (order of bells)
  * @param {string[]} row
@@ -279,6 +281,8 @@ const validateIncludes = () => {
 	}
 };
 
+console.time(`Checked ${iterations} iterations in`);
+
 /**
  * Check that `includeMethods` does not have an invalid configuration which
  * would result in nothing being logged to output
@@ -289,3 +293,5 @@ validateIncludes();
  * Execute the composition "search"
  */
 checkForCompositions();
+
+console.timeEnd(`Checked ${iterations} iterations in`);
