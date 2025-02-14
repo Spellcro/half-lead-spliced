@@ -42,7 +42,7 @@ const splitPlaceNotationIntoChanges = (notation) => {
  * @param {string[]} changes
  * @returns {boolean}
  */
-const validateChanges = (changes, composition) => {
+const validateChanges = (changes) => {
 	const rounds = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
 	const rows = [rounds];
@@ -82,12 +82,6 @@ const validateChanges = (changes, composition) => {
 		uniqueRows.add(nextRow.join(''));
 
 		if (uniqueRows.size === uniqueRowCount) {
-			if (changeNumber > 1100) {
-				console.log(
-					`Composition ${composition} was false...\n at row number ${changeNumber}, ${nextRow.join('')} :(\n`
-				);
-			}
-
 			return false;
 		}
 	}
