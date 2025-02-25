@@ -10,8 +10,8 @@ const CONFIG = {
 	// Add a minimum length of touch to output. Set to numberOfLeads to force a specific touch length. Default: 4
 	minimumLength: 4,
 
-	// If the program should validate for truth. Significantly increases the execution time. Default: false
-	checkForTruth: false,
+	// If the program should validate for truth. Default: true
+	checkForTruth: true,
 
 	// An array of methods to include. Touch will not be logged unless all mentioned methods are involved.
 	// Checks for substrings of the method keys, so e.g 'B', 'B1', 'B1s' will all work. Default: []
@@ -30,6 +30,10 @@ const CONFIG = {
 	// Max bobs/singles in a touch. Will not output any touch with more calls than this (at any position).
 	// Set to any negative number to disable. Default: 2
 	maxCalls: 2,
+
+	// Configuration for multipart touches
+	parts: 1,
+	partEnd: '12345678',
 };
 
 // To limit the method set, manually comment out any methods below that you wish to exclude
@@ -140,10 +144,10 @@ const numberOfFirstHalves = firstHalfLeadMethods.length;
 const numberOfSecondHalves = secondHalfLeadMethods.length;
 
 /**
- * @param{string[]} row
+ * @param {string[]} row
  */
 const isRounds = (row) => {
-	return row.join('') === '12345678';
+	return row.join('') === (CONFIG.partEnd || '12345678');
 };
 
 /**
@@ -243,6 +247,8 @@ const generateRandomComposition = () => {
 	// Iterate through each lead of the composition, to see if it comes round
 	let bellOrder = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
+	const leadEnds = new Set();
+
 	const methodsRung = [];
 
 	let roundsFound = false;
@@ -252,7 +258,17 @@ const generateRandomComposition = () => {
 		const method = composition[step];
 		bellOrder = permute(bellOrder, allPermutations[method]);
 		methodsRung.push(method);
+
+		// If we hit a duplicate change, there is no reason to continue
+		const row = bellOrder.join('');
+		leadEnds.add(row);
+
+		if (leadEnds.size <= step) {
+			break;
+		}
+
 		roundsFound = isRounds(bellOrder);
+
 		step += 1;
 	}
 
@@ -263,7 +279,7 @@ const generateRandomComposition = () => {
 	if (roundsFound && containsAllDesired && leadsRung >= minimumLength) {
 		const formattedComposition = formatForPrint(methodsRung);
 
-		if (!CONFIG.checkForTruth || checkForTruth(formattedComposition)) {
+		if (!CONFIG.checkForTruth || checkForTruth(formattedComposition, CONFIG.parts)) {
 			console.log('Found rounds: ', formattedComposition);
 		}
 	}
@@ -278,9 +294,10 @@ const checkForCompositions = () => {
 	}
 };
 
-const validateIncludes = () => {
+const validateConfiguration = () => {
 	const allMethods = Object.keys(allPermutations);
 
+	// Check that `includeMethods` does not have an invalid configuration which would result in nothing being logged
 	const invalidIncludes = includeMethods.filter((m) => !allMethods.some((key) => key.includes(m)));
 
 	if (invalidIncludes.length) {
@@ -289,19 +306,33 @@ const validateIncludes = () => {
 			`Invalid includeMethods configuration. The following methods are missing from the available methods list, but requested by the includeMethods config: ${includeString}`
 		);
 	}
+
+	// Check that the part end configuration is valid
+	const partEnds = new Set();
+
+	let partEnd = ['1', '2', '3', '4', '5', '6', '7', '8'];
+
+	for (let part = 1; part <= CONFIG.parts; part++) {
+		partEnd = permute(partEnd, CONFIG.partEnd);
+
+		partEnds.add(partEnd.join(''));
+
+		if (partEnds.size < part) {
+			throw new Error(`Invalid parts/partEnd configuration. Duplicate part ends appear before all parts are rung`);
+		}
+	}
+
+	if (partEnd.join('') !== '12345678') {
+		throw new Error(`Invalid parts/partEnd configuration. Rounds is not reached after ${CONFIG.parts} parts.`);
+	}
 };
 
 console.time(`Checked ${iterations} iterations in`);
 
-/**
- * Check that `includeMethods` does not have an invalid configuration which
- * would result in nothing being logged to output
- */
-validateIncludes();
+// Validate the CONFIG object before proceeding with generation
+validateConfiguration();
 
-/**
- * Execute the composition "search"
- */
+// Execute the composition "search"
 checkForCompositions();
 
 console.timeEnd(`Checked ${iterations} iterations in`);
