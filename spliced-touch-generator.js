@@ -10,7 +10,7 @@ const CONFIG = {
 	// Add a minimum length of touch to output. Set to numberOfLeads to force a specific touch length. Default: 4
 	minimumLength: 4,
 
-	// If the program should validate for truth. Default: true
+	// If the program should validate for truth. Currently breaks with half-lead calls. Default: true
 	checkForTruth: true,
 
 	// An array of methods to include. Touch will not be logged unless all mentioned methods are involved.
@@ -30,6 +30,10 @@ const CONFIG = {
 	// Max bobs/singles in a touch. Will not output any touch with more calls than this (at any position).
 	// Set to any negative number to disable. Default: 2
 	maxCalls: 2,
+
+	// The chance (0 to 1 inclusive) of including a call at any given lead. Used to weight number of calls in a touch.
+	// Set to 0 to disable lead end calls. Default: 0.25
+	chanceOfCall: 0.2,
 
 	// Configuration for multipart touches
 	parts: 1,
@@ -140,6 +144,9 @@ const allPermutations = { ...firstHalfLeads, ...secondHalfLeads };
 const firstHalfLeadMethods = Object.keys(firstHalfLeads);
 const secondHalfLeadMethods = Object.keys(secondHalfLeads);
 
+const secondHalfLeadsPlain = secondHalfLeadMethods.filter((m) => !m.includes('s') && !m.includes('.'));
+const secondHalfLeadsCalls = secondHalfLeadMethods.filter((m) => !secondHalfLeadsPlain.includes(m));
+
 const numberOfFirstHalves = firstHalfLeadMethods.length;
 const numberOfSecondHalves = secondHalfLeadMethods.length;
 
@@ -229,11 +236,27 @@ const generateRandomComposition = () => {
 	for (let i = 0; i < numberOfLeads; i += 1) {
 		// Add a first half lead
 		const firstHalf = Math.floor(Math.random() * numberOfFirstHalves);
-		composition.push(firstHalfLeadMethods[firstHalf]);
+		const firstHalfMethod = firstHalfLeadMethods[firstHalf];
+		composition.push(firstHalfMethod);
 
-		// Add a second half lead
-		const secondHalf = useSameSecondHalf ? fixedSecondHalf : Math.floor(Math.random() * numberOfSecondHalves);
-		composition.push(secondHalfLeadMethods[secondHalf]);
+		if (useSameSecondHalf) {
+			composition.push(secondHalfLeadMethods[fixedSecondHalf]);
+			continue;
+		}
+
+		// Add a second half lead, weighted against not including calls
+		const useCall = Math.random() < CONFIG.chanceOfCall;
+
+		const methodSet = useCall ? secondHalfLeadsCalls : secondHalfLeadsPlain;
+
+		let secondHalf = Math.floor(Math.random() * methodSet.length);
+		const isSameAsFirstHalf = methodSet[secondHalf][0] === firstHalfMethod[0];
+
+		if (isSameAsFirstHalf) {
+			secondHalf = pickDifferentNumber(secondHalf, methodSet.length);
+		}
+
+		composition.push(methodSet[secondHalf]);
 	}
 
 	const calls = composition
@@ -295,6 +318,10 @@ const checkForCompositions = () => {
 };
 
 const validateConfiguration = () => {
+	if (useHalfLeadCalls && CONFIG.checkForTruth) {
+		throw new Error('Invalid configuration: `checkForTruth` is not currently supported when using half lead calls.');
+	}
+
 	const allMethods = Object.keys(allPermutations);
 
 	// Check that `includeMethods` does not have an invalid configuration which would result in nothing being logged
@@ -328,6 +355,10 @@ const validateConfiguration = () => {
 };
 
 console.time(`Checked ${iterations} iterations in`);
+
+console.log(
+	`Searching for a ${CONFIG.parts}-part composition with part-end ${CONFIG.partEnd}. Chance of call: ${CONFIG.chanceOfCall}`
+);
 
 // Validate the CONFIG object before proceeding with generation
 validateConfiguration();
