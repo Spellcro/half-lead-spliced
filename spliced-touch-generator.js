@@ -50,7 +50,6 @@ const firstHalfLeadsPlain = {
 	B1: '24365871', // Bristol
 	R1: '72458361', // Rutland
 	L1: '42637851', // London
-	G1: '25374681', // Glasgow
 };
 
 const firstHalfLeadsBobs = {
