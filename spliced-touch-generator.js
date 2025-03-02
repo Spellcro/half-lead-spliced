@@ -1,123 +1,11 @@
 import { checkForTruth } from './validate-composition.js';
-
-/**
- * CONFIGURATION for touch generation
- */
-const CONFIG = {
-	// Number of full leads to generate. Output will occur early if rounds comes up before this amount. Default: 8
-	numberOfLeads: 8,
-
-	// Add a minimum length of touch to output. Set to numberOfLeads to force a specific touch length. Default: 4
-	minimumLength: 4,
-
-	// If the program should validate for truth. Currently breaks with half-lead calls. Default: true
-	checkForTruth: true,
-
-	// An array of methods to include. Touch will not be logged unless all mentioned methods are involved.
-	// Checks for substrings of the method keys, so e.g 'B', 'B1', 'B1s' will all work. Default: []
-	/** @type {string[]} */
-	includeMethods: [],
-
-	// Force the touch to use the same "second half" method. Default: false
-	useSameSecondHalf: false,
-
-	// Include half-lead bobs and singles. Default: false
-	useHalfLeadCalls: false,
-
-	// Number of compositions to attempt to generate. Try increasing if compositions are not found. Default: 100000
-	iterations: 100000,
-
-	// Max bobs/singles in a touch. Will not output any touch with more calls than this (at any position).
-	// Set to any negative number to disable. Default: 2
-	maxCalls: 2,
-
-	// The chance (0 to 1 inclusive) of including a call at any given lead. Used to weight number of calls in a touch.
-	// Set to 0 to disable lead end calls. Default: 0.25
-	chanceOfCall: 0.2,
-
-	// Configuration for multipart touches
-	parts: 1,
-	partEnd: '12345678',
-};
-
-// To limit the method set, manually comment out any methods below that you wish to exclude
-const firstHalfLeadsPlain = {
-	Y1: '68472531', // Yorkshire
-	S1: '68472531', // Superlative
-	C1: '74256831', // Cambridge
-	N1: '47256831', // Lincolnshire
-	P1: '68254731', // Pudsey
-	B1: '24365871', // Bristol
-	R1: '72458361', // Rutland
-	L1: '42637851', // London
-};
-
-const firstHalfLeadsBobs = {
-	'Y1.': '68475321', // Yorkshire
-	'S1.': '68475321', // Superlative
-	'C1.': '74258361', // Cambridge
-	'N1.': '47258361', // Lincolnshire
-	'P1.': '68257341', // Pudsey
-	'B1.': '32546871', // Bristol
-	'R1.': '47825361', // Rutland
-};
-
-const firstHalfLeadsSingles = {
-	Y1s: '68475231', // Yorkshire
-	S1s: '68475231', // Superlative
-	C1s: '74258631', // Cambridge
-	N1s: '47258631', // Lincolnshire
-	P1s: '68257431', // Pudsey
-	B1s: '32546781', // Bristol
-	R1s: '47825631', // Rutland
-	L1s: '42637581', // London
-};
-
-const secondHalfLeads = {
-	// Yorkshire
-	Y2: '86472513',
-	'Y2.': '87642513',
-	Y2s: '86742513',
-
-	// Superlative
-	S2: '86472513',
-	'S2.': '87642513',
-	S2s: '86742513',
-
-	// Cambridge
-	C2: '84176352',
-	'C2.': '87416352',
-	C2s: '84716352',
-
-	// Lincolnshire
-	N2: '84276351',
-	'N2.': '87426351',
-	N2s: '84726351',
-
-	// Pudsey
-	P2: '84672315',
-	'P2.': '87462315',
-	P2s: '84762315',
-
-	// Bristol
-	B2: '82143657',
-	'B2.': '82135476',
-	B2s: '81235476',
-
-	// Rutland
-	R2: '83276541',
-	'R2.': '87326541',
-	R2s: '83726541',
-
-	// London
-	L2: '81234675',
-	'L2.': '83124675',
-	L2s: '81324675',
-};
-
-/**
- * END OF CONFIGURATION
- */
+import {
+	CONFIG,
+	firstHalfLeadsPlain,
+	firstHalfLeadsBobs,
+	firstHalfLeadsSingles,
+	secondHalfLeads,
+} from './configuration.js';
 
 // Destructure config items
 const { numberOfLeads, minimumLength, useSameSecondHalf, iterations, useHalfLeadCalls, maxCalls } = CONFIG;
@@ -232,10 +120,24 @@ const generateRandomComposition = () => {
 	// Randomly generate a composition from our available methods
 	const composition = [];
 
+	let previousSecondHalf = '';
+
+	let callsCount = 0;
+
 	for (let i = 0; i < numberOfLeads; i += 1) {
-		// Add a first half lead
-		const firstHalf = Math.floor(Math.random() * numberOfFirstHalves);
+		// Add a first half lead, different to the previous one
+		let firstHalf = Math.floor(Math.random() * numberOfFirstHalves);
+
+		// Avoid a missing change of method at the lead end
+		const isSameAsPreviousSecondHalf = firstHalfLeadMethods[firstHalf][0] === previousSecondHalf[0];
+
+		if (isSameAsPreviousSecondHalf) {
+			firstHalf = pickDifferentNumber(firstHalf, numberOfFirstHalves);
+		}
+
 		const firstHalfMethod = firstHalfLeadMethods[firstHalf];
+
+		// Add the first half to the composition
 		composition.push(firstHalfMethod);
 
 		if (useSameSecondHalf) {
@@ -244,7 +146,9 @@ const generateRandomComposition = () => {
 		}
 
 		// Add a second half lead, weighted against not including calls
-		const useCall = Math.random() < CONFIG.chanceOfCall;
+		const useCall = (maxCalls < 0 || callsCount < maxCalls) && Math.random() < CONFIG.chanceOfCall;
+
+		if (useCall) callsCount += 1;
 
 		const methodSet = useCall ? secondHalfLeadsCalls : secondHalfLeadsPlain;
 
@@ -255,18 +159,14 @@ const generateRandomComposition = () => {
 			secondHalf = pickDifferentNumber(secondHalf, methodSet.length);
 		}
 
-		composition.push(methodSet[secondHalf]);
+		const secondHalfMethod = methodSet[secondHalf];
+
+		previousSecondHalf = secondHalfMethod;
+
+		composition.push(secondHalfMethod);
 	}
 
-	const calls = composition
-		.join(' ')
-		.split('')
-		.filter((c) => c === 's' || c === '.');
-	if (maxCalls >= 0 && calls.length > maxCalls) {
-		return;
-	}
-
-	// Iterate through each lead of the composition, to see if it comes round
+	// Iterate through each half-lead of the composition, to see if it comes round
 	let bellOrder = ['1', '2', '3', '4', '5', '6', '7', '8'];
 
 	const leadEnds = new Set();
@@ -355,9 +255,7 @@ const validateConfiguration = () => {
 
 console.time(`Checked ${iterations} iterations in`);
 
-console.log(
-	`Searching for a ${CONFIG.parts}-part composition with part-end ${CONFIG.partEnd}. Chance of call: ${CONFIG.chanceOfCall}`
-);
+console.log(`Searching for a ${CONFIG.parts}-part composition with part-end ${CONFIG.partEnd}.`);
 
 // Validate the CONFIG object before proceeding with generation
 validateConfiguration();
