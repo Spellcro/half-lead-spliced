@@ -9,6 +9,8 @@
 		"start": "node spliced-touch-generator.js"
 	},
 	"author": "Adam Wilmott",
-	"license": "MIT"
+	"license": "MIT",
+	"dependencies": {
+		"modern-ahocorasick": "^2.0.4"
+	}
 }
-
