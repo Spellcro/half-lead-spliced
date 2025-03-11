@@ -1,4 +1,5 @@
 import { placeNotation } from './data/place-notation.js';
+import { scoreMusic } from './utils/music.utils.js';
 
 /**
  * Takes a place notation string and returns an array
@@ -40,7 +41,7 @@ const splitPlaceNotationIntoChanges = (notation) => {
 
 /**
  * @param {string[]} changes
- * @returns {boolean}
+ * @returns {Set<string>?}
  */
 const validateChanges = (changes) => {
 	const rounds = ['1', '2', '3', '4', '5', '6', '7', '8'];
@@ -82,11 +83,11 @@ const validateChanges = (changes) => {
 		uniqueRows.add(nextRow.join(''));
 
 		if (uniqueRows.size === uniqueRowCount) {
-			return false;
+			return null;
 		}
 	}
 
-	return true;
+	return uniqueRows;
 };
 
 /**
@@ -104,7 +105,7 @@ const duplicateArray = (arr, n) => {
  * Checks a composition (or an n-part composition) for truth
  * @param {string} composition
  * @param {number} parts
- * @returns
+ * @returns {[Set<string>, number]?} A tuple of all the rows as a Set, and a music scores
  */
 export const checkForTruth = (composition, parts = 1) => {
 	const leadsInPart = composition.split(' ');
@@ -141,5 +142,12 @@ export const checkForTruth = (composition, parts = 1) => {
 	});
 
 	// Execute each change and check it is unique
-	return validateChanges(changes);
+	const rows = validateChanges(changes);
+
+	if (!rows) {
+		return null;
+	}
+
+	// Score music?
+	return [rows, scoreMusic(rows)];
 };
