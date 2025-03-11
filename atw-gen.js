@@ -1,0 +1,76 @@
+import { leadEndPermutations } from './data/pairs.js';
+import { checkForTruth } from './validate-composition.js';
+
+const leads = Object.keys(leadEndPermutations);
+
+function applyPermutation(state, permutation) {
+	return permutation.map((i) => state[i - 1]);
+}
+
+function findSequence(startState, permutations, path = [], visited = new Set()) {
+	// If touch is false, return false;
+	const comp = path.map((i) => permutations[i]).join(' ');
+
+	if (comp.length && !checkForTruth(comp)) {
+		return false;
+	}
+
+	if (path.length === permutations.length) {
+		// Success condition: Final state must return to identity
+		return JSON.stringify(startState) === JSON.stringify([1, 2, 3, 4, 5, 6, 7, 8]);
+	}
+
+	for (let i = 0; i < permutations.length; i++) {
+		if (path.includes(i)) continue; // Skip used permutations
+
+		const newState = applyPermutation(startState, leadEndPermutations[permutations[i]].split(''));
+		const stateKey = JSON.stringify(newState);
+
+		if (!visited.has(stateKey)) {
+			visited.add(stateKey);
+			path.push(i);
+
+			if (findSequence(newState, permutations, path, visited)) {
+				return true; // Found a valid sequence
+			}
+
+			// Backtrack
+			path.pop();
+			visited.delete(stateKey);
+		}
+	}
+
+	return false;
+}
+
+function shuffle(array) {
+	let currentIndex = array.length;
+
+	// While there remain elements to shuffle...
+	while (currentIndex != 0) {
+		// Pick a remaining element...
+		let randomIndex = Math.floor(Math.random() * currentIndex);
+		currentIndex--;
+
+		// And swap it with the current element.
+		[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+	}
+
+	return array;
+}
+
+const iterations = 10;
+
+for (let i = 0; i < iterations; i++) {
+	const rounds = [1, 2, 3, 4, 5, 6, 7, 8];
+	const result = [];
+
+	const randomLeads = shuffle([...leads]);
+
+	if (findSequence(rounds, randomLeads, result)) {
+		const comp = result.map((i) => randomLeads[i]).join(' ');
+		const [_, musicScore] = checkForTruth(comp);
+
+		console.log(`${musicScore}: ${comp}`);
+	}
+}
