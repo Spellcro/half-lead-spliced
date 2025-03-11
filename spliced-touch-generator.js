@@ -8,7 +8,8 @@ import {
 } from './configuration.js';
 
 // Destructure config items
-const { numberOfLeads, minimumLength, useSameSecondHalf, iterations, useHalfLeadCalls, maxCalls } = CONFIG;
+const { numberOfLeads, minimumLength, useSameSecondHalf, iterations, useHalfLeadCalls, maxCalls, minimumScore } =
+	CONFIG;
 
 const getFirstHalfLeads = () => {
 	let final = { ...firstHalfLeadsPlain };
@@ -201,9 +202,35 @@ const generateRandomComposition = () => {
 	if (roundsFound && containsAllDesired && leadsRung >= minimumLength) {
 		const formattedComposition = formatForPrint(methodsRung);
 
-		if (!CONFIG.checkForTruth || checkForTruth(formattedComposition, CONFIG.parts)) {
+		if (!CONFIG.checkForTruth) {
 			console.log('Found rounds: ', formattedComposition);
+			return;
 		}
+
+		const result = checkForTruth(formattedComposition, CONFIG.parts);
+
+		if (!result) {
+			return;
+		}
+
+		const [rows, score] = result;
+
+		if (score < minimumScore) {
+			return;
+		}
+
+		const touchLength = rows.size;
+
+		const desirableChanges = ['15263748', '87654321', '13572468', '75312468', '45362718'];
+		const desireCount = desirableChanges.length;
+
+		desirableChanges.forEach((c) => rows.add(c));
+
+		const desirables = desireCount - (rows.size - touchLength);
+
+		console.log(`Found: ${desirables} desirable changes and ${score} score: `, formattedComposition);
+
+		return formattedComposition;
 	}
 };
 

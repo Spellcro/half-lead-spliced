@@ -12,7 +12,7 @@ export const CONFIG = {
 	checkForTruth: true,
 
 	// An array of methods to include. Touch will not be logged unless all mentioned methods are involved.
-	// Checks for substrings of the method keys, so e.g 'B', 'B1', 'B1s' will all work. Default: []
+	// Checks for substrings of the method keys, so e.g 'B', 'B1', 'B1s' will all work with increasing specificity. Default: []
 	/** @type {string[]} */
 	includeMethods: [],
 
@@ -36,6 +36,9 @@ export const CONFIG = {
 	// Configuration for multipart touches. Default: parts=1, partEnd='12345678'
 	parts: 1,
 	partEnd: '12345678',
+
+	// Add a minimum music score. Default: 0
+	minimumScore: 0,
 };
 
 // To limit the method set, manually comment out any methods below that you wish to exclude
