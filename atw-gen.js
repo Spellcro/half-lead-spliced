@@ -1,7 +1,23 @@
 import { leadEndPermutations } from './data/pairs.js';
 import { checkForTruth } from './validate-composition.js';
 
-const leads = Object.keys(leadEndPermutations);
+// const leads = Object.keys(leadEndPermutations);
+
+const getInitialLeads = () => {
+	const leads = [];
+	const order = ['L', 'B', 'R', 'P', 'C', 'N', 'Y', 'S'];
+	for (let i = 0; i < order.length; i++) {
+		for (let j = 0; j < order.length; j++) {
+			if (i === j) continue;
+
+			leads.push(`${order[i]}${order[j]}`);
+		}
+	}
+
+	return leads;
+};
+
+const leads = getInitialLeads();
 
 function applyPermutation(state, permutation) {
 	return permutation.map((i) => state[i - 1]);
@@ -10,6 +26,13 @@ function applyPermutation(state, permutation) {
 function findSequence(startState, permutations, path = [], visited = new Set()) {
 	// If touch is false, return false;
 	const comp = path.map((i) => permutations[i]).join(' ');
+
+	// If touch contains a lead without a change of method, return false
+	const containsNoCom = ['C C', 'B B', 'N N', 'Y Y', 'S S', 'P P', 'L L', 'R R'].some((s) => comp.includes(s));
+
+	if (containsNoCom) {
+		return false;
+	}
 
 	if (comp.length && !checkForTruth(comp)) {
 		return false;
@@ -59,18 +82,22 @@ function shuffle(array) {
 	return array;
 }
 
-const iterations = 10;
+const iterations = 100;
 
 for (let i = 0; i < iterations; i++) {
 	const rounds = [1, 2, 3, 4, 5, 6, 7, 8];
 	const result = [];
 
+	// Shuffle the order after the first iteration
+	// const randomLeads = i === 0 ? [...leads] : shuffle([...leads]);
 	const randomLeads = shuffle([...leads]);
 
 	if (findSequence(rounds, randomLeads, result)) {
 		const comp = result.map((i) => randomLeads[i]).join(' ');
 		const [_, musicScore] = checkForTruth(comp);
 
-		console.log(`${musicScore}: ${comp}`);
+		if (musicScore > 100) {
+			console.log(`${musicScore}: ${comp}`);
+		}
 	}
 }
