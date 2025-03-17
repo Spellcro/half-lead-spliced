@@ -10,7 +10,7 @@ export const scoreMusic = (rows) => {
 
 	rowArr.forEach((r) => {
 		// 56s
-		if (r.startsWith('5678') || r.endsWith('5678')) {
+		if (r.startsWith('5678') || r.endsWith('5678') || r.startsWith('6578') || r.endsWith('6578')) {
 			score += 1;
 		}
 
@@ -23,30 +23,38 @@ export const scoreMusic = (rows) => {
 		// 4 Bell runs
 		const fourBellRuns = ['1234', '2345', '3456', '4567', '5678', '8765', '7654', '6543', '5432', '4321'];
 
-		if (fourBellRuns.some((run) => r.startsWith(run) || r.endsWith(run))) {
-			score += 1;
-		}
+		fourBellRuns.forEach((run) => {
+			if (r.startsWith(run) || r.endsWith(run)) {
+				score += 1;
+			}
+		});
 
 		// 5 Bell runs
 		const fiveBellRuns = ['12345', '23456', '34567', '45678', '87654', '76543', '65432', '54321'];
 
-		if (fiveBellRuns.some((run) => r.startsWith(run) || r.endsWith(run))) {
-			score += 1;
-		}
+		fiveBellRuns.forEach((run) => {
+			if (r.startsWith(run) || r.endsWith(run)) {
+				score += 1;
+			}
+		});
 
 		// 6 Bell runs
 		const sixBellRuns = ['123456', '234567', '345678', '876543', '765432', '654321'];
 
-		if (sixBellRuns.some((run) => r.startsWith(run) || r.endsWith(run))) {
-			score += 1;
-		}
+		sixBellRuns.forEach((run) => {
+			if (r.startsWith(run) || r.endsWith(run)) {
+				score += 1;
+			}
+		});
 
 		// 7 Bell runs
 		const sevenBellRuns = ['1234567', '2345678', '8765432', '7654321'];
 
-		if (sevenBellRuns.some((run) => r.startsWith(run) || r.endsWith(run))) {
-			score += 1;
-		}
+		sevenBellRuns.forEach((run) => {
+			if (r.startsWith(run) || r.endsWith(run)) {
+				score += 1;
+			}
+		});
 
 		// 5678 Combinations
 		const bigBellCombos = ['5678', '6578', '8765'];
