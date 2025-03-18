@@ -219,16 +219,33 @@ const generateRandomComposition = () => {
 			return;
 		}
 
-		const touchLength = rows.size;
+		const namedRows = [];
 
-		const desirableChanges = ['15263748', '87654321', '13572468', '75312468', '45362718'];
-		const desireCount = desirableChanges.length;
+		if (rows.has('13572468')) {
+			namedRows.push('Q');
+		}
 
-		desirableChanges.forEach((c) => rows.add(c));
+		if (rows.has('15263748')) {
+			namedRows.push('T');
+		}
 
-		const desirables = desireCount - (rows.size - touchLength);
+		if (rows.has('75312468')) {
+			namedRows.push('K');
+		}
 
-		console.log(`Found: ${desirables} desirable changes and ${score} score: `, formattedComposition);
+		if (rows.has('87654321')) {
+			namedRows.push('B');
+		}
+
+		if (rows.has('14327658')) {
+			namedRows.push('R');
+		}
+
+		if (rows.has('45362718')) {
+			namedRows.push('E');
+		}
+
+		console.log(`Found: ${score} score (${namedRows.length ? namedRows.join('') : '-'}): `, formattedComposition);
 
 		return formattedComposition;
 	}
