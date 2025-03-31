@@ -24,7 +24,6 @@ function applyPermutation(state, permutation) {
 }
 
 function findSequence(startState, permutations, path = [], visited = new Set()) {
-	// If touch is false, return false;
 	const comp = path.map((i) => permutations[i]).join(' ');
 
 	// If touch contains a lead without a change of method, return false
@@ -34,6 +33,7 @@ function findSequence(startState, permutations, path = [], visited = new Set()) 
 		return false;
 	}
 
+	// If touch is false, return false;
 	if (comp.length && !checkForTruth(comp)) {
 		return false;
 	}
@@ -96,8 +96,6 @@ for (let i = 0; i < iterations; i++) {
 		const comp = result.map((i) => randomLeads[i]).join(' ');
 		const [_, musicScore] = checkForTruth(comp);
 
-		if (musicScore > 100) {
-			console.log(`${musicScore}: ${comp}`);
-		}
+		console.log(`${musicScore}: ${comp}`);
 	}
 }
