@@ -57,7 +57,7 @@ export const scoreMusic = (rows) => {
 		});
 
 		// 5678 Combinations
-		const bigBellCombos = ['5678', '6578', '8765'];
+		const bigBellCombos = ['5678', '6578', '8765', '7658', '7568'];
 
 		if (bigBellCombos.some((c) => r.startsWith(c) || r.endsWith(c))) {
 			score += 1;
