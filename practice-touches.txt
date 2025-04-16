@@ -2,7 +2,7 @@
  * = Unpublished
 
 [Yorkshire]
-🌍 NLLRBN (5m, Tittums)
+🌍 NLLRBN (5m, T)
 🌍 BLSPNC (7m)
 🌍 BRsB.CLs (5m)
 🌍 CsLLP.R.N (6m)
@@ -21,29 +21,52 @@ For Superlative, swap S for Y in [Yorkshire]
 🌍 BCP (2-part, 4m)
 🌍 BSLBYL (5m)
 
+[Bristol]
+🌍 CPYsLCS (6m, B)
+🌍 PsSLsCSY (6m, B)
 
 [CNSY Mixed]
-🌍 BC BN LC BS LN (5m, Queens)
+🌍 BC BN LC BS LN (5m, Q)
 🌍 BY SY LS BN LC BC (6m)
 🌍 BS PY RS PN SC YC (7m)
 
-🌍 SY. SN BY. SYs BN BC (5m, Tittums)
+🌍 SY. SN BY. SYs BN BC (5m, T)
 🌍 BC YN. LS RNs YN SC (7m)
 
-🌍 BY. GN. SY BN LN (6m, Tittums, has Glasgow)
+🌍 BY. GN. SY BN LN (6m, T, has Glasgow)
 
 
-[Bristol]
-🌍 CPYsLCS (6m, Backrounds)
-🌍 PsSLsCSY (6m, Backrounds)
-
-
-
-[CNSYB Mixed]
+[Add Bristol (BCNSY)]
 🌍 BY BS NC PY RB LN.
 🌍* BY NS LC PB SN RB
 🌍* NS LC PY BN RB SB
 🌍* BS LY LN RB PC NSs
 
-BY BS RP LC. NY BP (Q,B,78)
+BY BS RP LC. NY BP (78 QB)
+
+🌍 RB YC SY PS BN LN (62 TB)
+
+[Add Pudsey]
+🌍 LPs RY SP LY NS CN (40 TB)
+🌍* BN LP NS YP LY SB. (57 TB)
+🌍* BS YB CY BP RP LY (54, E)
+
+Found: 71 score (QBE):  BY BS CS BP RP LY
+
+[To Organise]
+
+[Add Rutland]
+Found: 62 score (QB):  BY BSs LN RC LP BR
+Found: 39 score (K):  BR BY RC YSs NB SR
+Found: 58 score (B):  BY BR CB RB. CR
+Found: 48 score (Q):  BC BN CR SR BS
+
+Found: 83 score (QB):  BY BS YR BC LN
+
+[Add London]
+Found: 69 score (QB):  BY BSs PL BL RN CS
+Found: 71 score (QB):  BY BS CS RL NR YP
+Found: 52 score (-):  BL CR NS LP YL YP
+
+Found: 49 score (TB):  YP YL PSs RB CY BC
 
